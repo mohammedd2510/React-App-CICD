@@ -30,7 +30,7 @@ jobs:
         password: Hamada2510
     - uses: docker/build-push-action@v6.18.0
       with:
-       push: true
-       tags: mosama25/React-App-CICD:${{ env.GITHUB_SHA }}
+        push: true
+        tags: mosama25/React-App-CICD:${{ GITHUB_SHA }}
        
        
