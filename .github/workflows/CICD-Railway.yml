@@ -23,16 +23,17 @@ jobs:
     - name: Building Static Files
       run: npm run build
     - run : ls -lh
-    - uses: docker/login-action@v3.6.0
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v2
       with:
-      # Username used to log against the Docker registry
-        username: mosama25
-      # Password or personal access token used to log against the Docker registry
-        password: Hamada2510
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
     - uses: docker/build-push-action@v6.18.0
       with:
         push: true
-        tags: mosama25/react-app-cicd:${{ github.sha }},mosama25/react-app-cicd:latest
+        tags: ghcr.io/${{ github.actor }}/react-app-cicd:${{ github.sha }},ghcr.io/${{ github.actor }}/react-app-cicd:latest
         context: .
 
 
@@ -40,14 +41,12 @@ jobs:
   deploy_railway:
       runs-on: ubuntu-latest
       needs: build
+      container: ghcr.io/railwayapp/cli:latest
       steps:
-
-      - name: Install Railway CLI
-        run: |
-          curl -fsSL https://railway.app/install.sh | sh
 
       - name: Deploy Docker Image to Railway
         env:
-          RAILWAY_TOKEN: cc97ee25-0704-47fa-b7da-575e9f773ea7
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          SVC_NAME: react-app
         run: |
-          railway redeploy --service=mohamed -y
+          railway redeploy --service=$SVC_NAME -y
