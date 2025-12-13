@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: EC2-CICD
 
 on:
   workflow_dispatch:
@@ -46,8 +46,8 @@ jobs:
      - name: SSH into server
        uses: appleboy/ssh-action@v1.0.3
        with:
-         host: ${{ secrets.SSH_HOST }}
-         username: ${{ secrets.SSH_USER }}
+         host: ${{ vars.SSH_HOST }}
+         username: ${{ vars.SSH_USER }}
          key: ${{ secrets.SSH_PRIVATE_KEY }}
          script: |
              docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}

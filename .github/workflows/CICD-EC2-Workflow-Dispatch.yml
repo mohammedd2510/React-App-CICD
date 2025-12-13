@@ -1,5 +1,4 @@
-name: Docker Image CI
-
+name: Two-EC2s-Workflow-Dispatch-CICD
 on:
   workflow_dispatch:
    inputs:
@@ -53,8 +52,8 @@ jobs:
      - name: SSH into server
        uses: appleboy/ssh-action@v1.0.3
        with:
-         host: ${{ secrets.SSH_HOST }}
-         username: ${{ secrets.SSH_USER }}
+         host: ${{ vars.SSH_HOST }}
+         username: ${{ vars.SSH_USER }}
          key: ${{ secrets.SSH_PRIVATE_KEY }}
          script: |
              docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
@@ -71,8 +70,8 @@ jobs:
      - name: SSH into server
        uses: appleboy/ssh-action@v1.0.3
        with:
-         host: ${{ secrets.SSH_HOST_STG }}
-         username: ${{ secrets.SSH_USER_STG }}
+         host: ${{ vars.SSH_HOST_STG }}
+         username: ${{ vars.SSH_USER_STG }}
          key: ${{ secrets.SSH_PRIVATE_KEY_STG }}
          script: |
              docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
