@@ -10,9 +10,11 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
+      max-parallel: 3
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node: [16, 18]
+        node: [14, 16, 18]
         # Exclude some combinations
         exclude:
           - os: windows-latest
