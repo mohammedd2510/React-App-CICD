@@ -7,6 +7,6 @@ describe("App", () => {
   test("renders heading and hello component", () => {
     render(<App />);
     expect(screen.getByText(/React Static Site/i)).toBeInTheDocument();
-    expect(screen.getByTestId("hello")).toHaveTextContent("Hello, Mohamed!");
+    expect(screen.getByTestId("hello")).toHaveTextContent("Hello, route!");
   });
 });
