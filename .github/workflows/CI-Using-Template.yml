@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    uses: mohammedd2510/Reusable-Workflows-Custom-Actions/.github/workflows/CI-Template.yml@main
+    uses: mohammedd2510/Reusable-Workflows-Custom-Actions/.github/workflows/React-CI-Template.yml@main
     with:
       node-version: '20'
       image_name: "react-app-cicd"
