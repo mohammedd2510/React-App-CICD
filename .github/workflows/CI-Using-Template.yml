@@ -12,8 +12,6 @@ jobs:
   React-CI:
     uses: mohammedd2510/Reusable-Workflows-Custom-Actions/.github/workflows/React-CI-Template.yml@main
     with:
-      lint_phase: false
-      unit_test: false
       node-version: '20'
       image_name: "react-app-cicd"
     secrets:
