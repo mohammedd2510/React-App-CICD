@@ -29,6 +29,11 @@ jobs:
     - name: Building Static Files
       run: npm run build 
 
+    - name: Run Gitleaks
+      uses: gitleaks/gitleaks-action@v2
+      with:
+          fail: true
+          
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
