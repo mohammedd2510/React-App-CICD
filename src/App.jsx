@@ -10,6 +10,7 @@ export default function App() {
 //   return <div>Test</div>;
 // }
 
+
  function App_vulnerable() {
   const userInput = new URLSearchParams(window.location.search).get("msg");
 
