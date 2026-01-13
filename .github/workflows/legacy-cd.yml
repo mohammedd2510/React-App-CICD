@@ -18,4 +18,4 @@ jobs:
           name: react-app-build
 
       - name: Simulate deployment
-        run: echo "deploying to server"
+        run: echo "deploying to the server"
