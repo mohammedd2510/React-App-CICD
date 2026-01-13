@@ -12,12 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: tmp log
+        run: echo "${{ github.event.workflow_run.id }}"
+        
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           name: react-app-build
           run-id: ${{ github.event.workflow_run.id }}
-
 
       - name: Simulate deployment
         run: echo "deploying to the server"
