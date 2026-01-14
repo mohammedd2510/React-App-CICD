@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set lowercase owner
+      - name: Set github.actor to lowercase
         run: echo "OWNER=${GITHUB_ACTOR,,}" >> $GITHUB_ENV
     
       - name: Login to GitHub Container Registry
