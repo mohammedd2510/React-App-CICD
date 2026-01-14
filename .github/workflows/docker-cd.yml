@@ -1,0 +1,51 @@
+name: Dockerized CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["Dockerized CI"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set lowercase owner
+        run: echo "OWNER=${GITHUB_ACTOR,,}" >> $GITHUB_ENV
+    
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+  
+      - name: Pull Docker image
+        run: |
+          docker pull ghcr.io/${{ env.OWNER }}/react-app-cicd:${{ github.event.workflow_run.head_sha }}
+
+      - name: Run container
+        run: |
+          docker run -d \
+            -p 8080:80 \
+            --name react-app \
+            ghcr.io/${{ env.OWNER }}/react-app-cicd:${{ github.event.workflow_run.head_sha }}
+
+      - name: Wait for container to start
+        run: sleep 10
+
+      - name: Test application with curl
+        run: |
+          curl -f http://localhost:8080 || exit 1
+
+      - name: Cleanup container
+        run: |
+          docker stop react-app || true
+          docker rm react-app || true
