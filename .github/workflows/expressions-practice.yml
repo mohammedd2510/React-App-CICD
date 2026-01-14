@@ -1,0 +1,57 @@
+name: GitHub Actions Expressions Practice
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: false
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  expressions-demo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Branch Check (Main)
+        if: startsWith(github.ref, 'refs/heads/main')
+        run: echo "Main branch"
+
+      - name: Branch Check (Other)
+        if: "!startsWith(github.ref, 'refs/heads/main')"
+        run: echo "Other branch"
+
+      - name: Commit Message Check
+        if: contains(github.event.head_commit.message, 'fix')
+        run: |
+          echo "Commit message contains 'fix'"
+          echo "Message: ${{ github.event.head_commit.message }}"
+
+      - name: Show Event Data
+        run: echo '${{ toJSON(github.event) }}'
+
+      - name: Environment Value
+        run: |
+          ENVIRONMENT="${{ github.event.inputs.environment || 'dev' }}"
+          echo "Selected environment: $ENVIRONMENT"
+
+      - name: Run if all previous steps succeeded
+        if: success()
+        run: echo "All previous steps succeeded"
+
+      - name: Run if any previous step failed
+        if: failure()
+        run: echo "A previous step failed"
+
+      - name: Always run
+        if: always()
+        run: echo "This step always runs"
+
+      - name: Run if workflow is cancelled
+        if: cancelled()
+        run: echo "Workflow was cancelled"
