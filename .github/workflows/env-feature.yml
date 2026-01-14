@@ -21,4 +21,4 @@ jobs:
 
     steps:
       - name: Print environment text
-        run: echo "$environment_text"
+        run: echo "$ENVIRONMENT_TEXT"
