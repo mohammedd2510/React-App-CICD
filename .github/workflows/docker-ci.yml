@@ -40,11 +40,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set lowercase owner
+        run: echo "OWNER=${GITHUB_ACTOR,,}" >> $GITHUB_ENV
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6.18.0
         with:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.actor }}/react-app-cicd:${{ github.sha }}
-            ghcr.io/${{ github.actor }}/react-app-cicd:latest
+            ghcr.io/${{ env.OWNER }}/react-app-cicd:${{ github.sha }}
+            ghcr.io/${{ env.OWNER }}/react-app-cicd:latest
