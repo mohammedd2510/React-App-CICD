@@ -10,5 +10,9 @@ export default defineConfig({
     globals: true,        // allow using expect/test/describe without imports
     environment: "jsdom", // required for React components
     setupFiles: "./vitest.setup.js"
-  }
+  },
+    server: {
+    host: true,
+    allowedHosts: true,
+  },
 });
