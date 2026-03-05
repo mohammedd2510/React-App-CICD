@@ -1,0 +1,70 @@
+name: EC2-CICD-EKS
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [ "main" ]
+
+permissions:
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v6.1.0
+      with:
+        # Version Spec of the version to use. Examples: 12.x, 10.15.1, >=10.15.0.
+        node-version: 20
+    - name: Installing Dependencies
+      run: npm install
+    - name: lint Phase
+      run:  npm run lint
+      continue-on-error: true 
+    - name: unit test
+      run: npm run test
+      continue-on-error: true
+    - name: Building Static Files
+      run: npm run build
+ 
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Login to ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - uses: docker/build-push-action@v6.18.0
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: route-demo
+        IMAGE_TAG: ${{ github.sha }}
+      with:
+        push: true
+        tags: | 
+          $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        context: .
+
+#   deploy:
+#      runs-on: ubuntu-latest
+#      needs: build
+#      steps:
+#      - name: SSH into server
+#        uses: appleboy/ssh-action@v1.0.3
+#        with:
+#          host: ${{ vars.SSH_HOST }}
+#          username: ${{ vars.SSH_USER }}
+#          key: ${{ secrets.SSH_PRIVATE_KEY }}
+#          script: |
+#              docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+#              docker stop react-app || true
+#              docker rm react-app || true
+#              docker run -d -p 8080:80 --name "react-app" ghcr.io/${{ github.actor }}/react-app-cicd:${{ github.sha }}
+
+  
