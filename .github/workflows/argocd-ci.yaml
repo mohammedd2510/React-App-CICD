@@ -49,7 +49,7 @@ jobs:
       - name: Update Image Tag in GitOps Repo
         run: |
           git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/${{ github.actor }}/argocd-gitops-repo.git
-          cd argocd-gitops-repo-demo
+          cd argocd-gitops-repo
 
           # Replace the image tag in the deployment manifest
           sed -i "s|image: ghcr.io/.*/react-app-cicd:.*|image: ghcr.io/${{ github.actor }}/react-app-cicd:${{ github.sha }}|" react-app/deployment.yaml
